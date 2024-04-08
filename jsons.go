@@ -1,4 +1,4 @@
-package jsons
+package flyers
 
 import "encoding/json"
 
