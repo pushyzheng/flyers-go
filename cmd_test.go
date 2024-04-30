@@ -16,3 +16,10 @@ func TestNewShellCmd(t *testing.T) {
 	})
 	assert.Nil(t, err2)
 }
+
+func TestGetStdout(t *testing.T) {
+	cmdResult, err := NewShellCmd(context.Background(), "echo 'hello world'").Run()
+	assert.Nil(t, err)
+
+	assert.Equal(t, "hello world\n", cmdResult.GetStdoutStr())
+}

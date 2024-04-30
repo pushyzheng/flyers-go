@@ -53,6 +53,34 @@ func (c *Cmd) Run() (*CmdResult, error) {
 	}, nil
 }
 
+func (cr *CmdResult) Wait() error {
+	return cr.cmd.Wait()
+}
+
+func (cr *CmdResult) GetStdout() ([]byte, error) {
+	return io.ReadAll(cr.stdout)
+}
+
+func (cr *CmdResult) GetStdoutStr() string {
+	data, err := cr.GetStdout()
+	if err != nil {
+		return ""
+	}
+	return string(data)
+}
+
+func (cr *CmdResult) GetStderr() ([]byte, error) {
+	return io.ReadAll(cr.stderr)
+}
+
+func (cr *CmdResult) GetStderrStr() string {
+	data, err := cr.GetStderr()
+	if err != nil {
+		return ""
+	}
+	return string(data)
+}
+
 func (cr *CmdResult) ScanStdout(fn func(line string)) error {
 	scanner := bufio.NewScanner(cr.stdout)
 	for scanner.Scan() {
