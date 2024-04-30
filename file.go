@@ -4,9 +4,11 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"os"
 	"path"
+	"path/filepath"
+
+	"github.com/sirupsen/logrus"
 )
 
 var (
@@ -26,13 +28,11 @@ type File struct {
 
 type FileOptions struct {
 	Perm *os.FileMode
+
+	isFile bool
 }
 
-func NewDir(path string, ops ...FileOptions) *File {
-	return NewFile(path, "", ops...)
-}
-
-func NewFile(path, name string, ops ...FileOptions) *File {
+func NewFile(filePath string, ops ...FileOptions) *File {
 	var op FileOptions
 	if len(ops) > 0 {
 		op = ops[0]
@@ -40,13 +40,15 @@ func NewFile(path, name string, ops ...FileOptions) *File {
 	if op.Perm == nil {
 		op.Perm = &defaultPerm
 	}
+	basePath := filepath.Dir(filePath)
+	fileName := filepath.Base(filePath)
 	return &File{
-		path:   path,
-		name:   name,
+		path:   basePath,
+		name:   fileName,
 		option: op,
 		logger: logrus.WithFields(logrus.Fields{
-			"path": path,
-			"name": name,
+			"path": filePath,
+			"name": fileName,
 		}),
 	}
 }
